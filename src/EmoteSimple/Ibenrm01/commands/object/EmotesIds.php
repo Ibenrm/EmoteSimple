@@ -2,10 +2,6 @@
 
 namespace EmoteSimple\Ibenrm01\commands\object;
 
-use pocketmine\event\Listener;
-
-use EmoteSimple\Ibenrm01\EmoteSimple;
-
 class EmotesIds implements Listener{
 
     /** @var array[] $emotes */
@@ -42,11 +38,4 @@ class EmotesIds implements Listener{
         ["name"=>"Hand_Stand", "uid"=>"5dd129f9-cfc3-4fc1-b464-c66a03061545"],
         ["name"=>"Kneeling", "uid"=>"24444aea-cb6e-451f-90fc-b74e57cc7c5d"]
     ];
-
-    /**
-     * EmotesIds constructor.
-     * @param EmoteSimple $plugin
-     */
-    public function __construct(private EmoteSimple $plugin){
-    }
 }

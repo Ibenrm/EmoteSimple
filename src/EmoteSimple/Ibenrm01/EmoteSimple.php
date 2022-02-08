@@ -80,7 +80,7 @@ class EmoteSimple extends PluginBase implements Listener {
     }
     
     public function getDataIds(): EmotesIds {
-    	return new EmotesIds($this);
+    	return new EmotesIds();
     }
 
     /**

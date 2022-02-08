@@ -11,9 +11,7 @@ use pocketmine\utils\Config;
 use pocketmine\event\player\PlayerEmoteEvent;
 
 use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\network\mcpe\protocol\{
-    EmotePakcet, ProtocolInfo
-};
+use pocketmine\network\mcpe\protocol\EmotePacket;
 
 use EmoteSimple\Ibenrm01\EmoteSimple;
 
@@ -33,7 +31,7 @@ class EmotesAPI implements Listener{
      */
     public function onDataPacketReceived(DataPacketReceiveEvent $event) : void{
 		$packet = $event->getPacket();
-        $player = $event->getOrigin();
+        $player = $event->getOrigin()->getPlayer();
         if($packet instanceof EmotePacket){
             $emoteId = $packet->getEmoteId();
             foreach($player->getViewers() as $players){
