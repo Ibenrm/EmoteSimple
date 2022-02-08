@@ -9,6 +9,7 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\event\Listener;
 use pocketmine\utils\Config;
 use pocketmine\event\player\PlayerChatEvent;
+use pocketmine\permission\PermissionManager;
 
 use EmoteSimple\Ibenrm01\EmotesAPI;
 use EmoteSimple\Ibenrm01\commands\EmoteCommand;
@@ -120,10 +121,19 @@ class EmoteSimple extends PluginBase implements Listener {
                 }
                 if($this->getEmotes()->searchEmote($params[1])){
                     $emoteId = $this->getEmotes()->getIds($this->getEmotes()->getIndex($params[1]));
+                    $permission = $this->getEmotes()->getPermission($this->getEmotes()->getIndex($params[1]));
+                    if(!PermissionManager::getInstance()->getPermission($permission)){
+                        if(!$this->getServer()->isOp($player->getName())){
+                            $player->sendMessage("§cYou don't have permission to use this emote.");
+                            break;
+                        }
+                    }
                     if($this->getEmotes()->setEmotes($player, $emoteId)){
                         $player->sendMessage($this->replace($this->getConfig()->get("use.emotes"), [
                             "emote_name"=>$params[1]
                         ]));
+                    } else {
+                        $player->sendMessage("§cEmotes §d{$params[1]} §cnot found.");
                     }
                 }
                 break;

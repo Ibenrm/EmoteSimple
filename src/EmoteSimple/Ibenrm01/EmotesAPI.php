@@ -11,17 +11,17 @@ use pocketmine\utils\Config;
 use pocketmine\event\player\PlayerEmoteEvent;
 
 use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\network\mcpe\protocol\EmotePacket;
+use pocketmine\network\mcpe\protocol\{
+    EmotePakcet, ProtocolInfo
+};
 
 use EmoteSimple\Ibenrm01\EmoteSimple;
 
 class EmotesAPI implements Listener{
 
-    private int $lastEmoteTick = 0;
-
     /**
      * EmotesAPI contructor.
-     * @param EmoteSimple
+     * @param EmoteSimple $plugin
      */
     public function __construct(private EmoteSimple $plugin) {
     }
@@ -33,13 +33,13 @@ class EmotesAPI implements Listener{
      */
     public function onDataPacketReceived(DataPacketReceiveEvent $event) : void{
 		$packet = $event->getPacket();
-        $player = $event->getPlayer();
-		if($packet instanceof EmotePacket){
-			$emoteId = $packet->getEmoteId();
+        $player = $event->getOrigin();
+        if($packet instanceof EmotePacket){
+            $emoteId = $packet->getEmoteId();
             foreach($player->getViewers() as $players){
                 $players->getNetworkSession()->onEmote($player, $emoteId);
             }
-		}
+        }
 	}
 
     /**
@@ -62,7 +62,7 @@ class EmotesAPI implements Listener{
     }
 
     /**
-     * @param $emoteName
+     * @param bool|string $emoteName
      */
     public function getIndex($emoteName = false){
         $index = false;
@@ -84,20 +84,23 @@ class EmotesAPI implements Listener{
     /**
      * @param string $emoteName
      * @param string $uid
+     * @param string $permission
      * 
      * @return string
      */
-    public function createEmotes(string $emoteName, string $uid): string{
+    public function createEmotes(string $emoteName, string $uid, string $permission): string{
         if(!$this->searchEmote($emoteName)){
-            $this->plugin->emoteAPI[] = ["name" => $emoteName, "uid" => $uid];
+            $this->plugin->emoteAPI[] = ["name" => $emoteName, "uid" => $uid, "permission" => $permission];
             return $this->plugin->replace($this->plugin->getConfig()->get("create.emote-success"), [
                 "emote_name"=>$emoteName,
-                "uid"=>$uid
+                "uid"=>$uid,
+                "permission"=>$permission
             ]);
         }
         return $this->plugin->replace($this->plugin->getConfig()->get("create.emote-already"), [
             "emote_name"=>$emoteName,
-            "uid"=>$uid
+            "uid"=>$uid,
+            "permission"=>$permission
         ]);
     }
 
@@ -125,6 +128,15 @@ class EmotesAPI implements Listener{
      */
     public function getIds(int $index): string{
         return $this->plugin->emoteAPI[$index]['uid'];
+    }
+
+    /**
+     * @param int $index
+     * 
+     * @return string
+     */
+    public function getPermission(int $index): string{
+        return $this->plugin->emoteAPI[$index]['permission'];
     }
 
     /**

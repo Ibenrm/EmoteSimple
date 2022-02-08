@@ -22,7 +22,7 @@ class EmoteCommand extends Command {
      * @param EmoteSimple $plugin
      */
     public function __construct(protected EmoteSimple $plugin){
-        parent::__construct("emotes", "Emotes Commands", "/emotes [help]");
+        parent::__construct("emotes", "Emotes Commands", "/emotes [help]", ['emotesimple']);
     }
 
     /**
@@ -39,12 +39,27 @@ class EmoteCommand extends Command {
         }
         switch($args[0]){
             case "create":
+                if(!$player instanceof Player){
+                    $player->sendMessage("§cUse this command in-game.");
+                    return false;
+                }
+                if(!$this->plugin->getServer()->isOp($player->getName())){
+                    $player->sendMessage("§cYou don't have permission!");
+                    return false;
+                }
                 $this->createEmotes($player);
-                return true;
                 break;
             case "remove":
                 if(!isset($args[1])){
                     $player->sendMessage("§cUsage: /emotes remove <string: emoteName>");
+                    return false;
+                }
+                if(!$player instanceof Player){
+                    $player->sendMessage("§cUse this command in-game.");
+                    return false;
+                }
+                if(!$this->plugin->getServer()->isOp($player->getName())){
+                    $player->sendMessage("§cYou don't have permission!");
                     return false;
                 }
                 if($this->plugin->getEmotes()->searchEmote($args[1])){
@@ -52,7 +67,6 @@ class EmoteCommand extends Command {
                     return true;
                 }
                 $player->sendMessage("§cEmotes §d{$args[1]} §cnot found!");
-                return false;
                 break;
             case "help":
                 $player->sendMessage("§a> EmoteSimple Command (1/1)\n".
@@ -60,15 +74,13 @@ class EmoteCommand extends Command {
                 "§7/emotes remove <string: emoteName> : §bremove emotes by name\n".
                 "§7/emotes help : §blist a command\n".
                 "§7/emotes version : §bdescription a plugin");
-                return true;
                 break;
             case "version":
             case "ver":
                 $player->sendMessage("§a> EmoteSimple Description\n".
                 "§fAuthor: §aIbenrm01\n".
-                "§fVersion: §a1.2\n".
+                "§fVersion: §a1.8.1\n".
                 "§fApi: §a[4.0.0]");
-                return true;
             break;
         }
         return false;
@@ -92,12 +104,21 @@ class EmoteCommand extends Command {
                 $player->sendMessage("§cSyntax error, input a name emotes!");
                 return;
             }
+            if($data[3] == null){
+                $player->sendMessage("§cSyntax error, input a permissions!");
+                return;
+            }
             $emote_name = str_replace(" ", "_", $data[2]);
             if (!preg_match("/[^*`#%,.'~$@?]/",$emote_name)) {
                 $player->sendMessage("§cSyntax error, dont use ( /^*`#%,.'~$@?/ )");
                 return;
             }
-            $player->sendMessage($this->plugin->getEmotes()->createEmotes(strtolower($emote_name), $this->plugin->getDataIds()->emotes[$data[1]]['uid']));
+            $permission = str_replace(" ", ".", $data[3]);
+            if (!preg_match("/[^*`#%,-_'~$@?]/",$permission)) {
+                $player->sendMessage("§cSyntax error, dont use ( /^*`#%,-_'~$@?/ )");
+                return;
+            }
+            $player->sendMessage($this->plugin->getEmotes()->createEmotes(strtolower($emote_name), $this->plugin->getDataIds()->emotes[$data[1]]['uid'], strtolower($permission)));
             return;
             
         });
@@ -105,6 +126,7 @@ class EmoteCommand extends Command {
         $form->addLabel($this->plugin->getConfig()->getAll()['forms.create']['content']);
         $form->addDropdown("§bList a Emotes:", $this->youre[$player->getName()]);
         $form->addInput("§aName a Emotes:", "input a name");
+        $form->addInput("§aSets permissions:", "input a permission");
         $form->sendToPlayer($player);
     }
 
