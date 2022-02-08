@@ -2,7 +2,7 @@
 
 namespace EmoteSimple\Ibenrm01\commands\object;
 
-class EmotesIds implements Listener{
+class EmotesIds {
 
     /** @var array[] $emotes */
     public $emotes = [
