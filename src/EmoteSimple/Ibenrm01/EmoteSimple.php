@@ -122,7 +122,7 @@ class EmoteSimple extends PluginBase implements Listener {
                 if($this->getEmotes()->searchEmote($params[1])){
                     $emoteId = $this->getEmotes()->getIds($this->getEmotes()->getIndex($params[1]));
                     $permission = $this->getEmotes()->getPermission($this->getEmotes()->getIndex($params[1]));
-                    if(!PermissionManager::getInstance()->getPermission($permission)){
+                    if(!$player->hasPermission($permission)){
                         if(!$this->getServer()->isOp($player->getName())){
                             $player->sendMessage("§cYou don't have permission to use this emote.");
                             break;

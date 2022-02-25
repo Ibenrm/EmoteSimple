@@ -4,7 +4,6 @@ PocketMine-MP 4.0+**
 
 ## Support
 **You can use minecraft bedrock profile built-in emote.**
-
 **You can custom permission.**
 
 ## Warning!!!
@@ -16,11 +15,8 @@ The EmoteSimple not supported multi permissions.
 - Created Emotes
 
   For commands you can use:
-  
   `/emotes create`
-  
   For api you can use:
-  
 ```php
 $player->sendMessage(EmoteSimple::getInstance()->getEmotes()->createEmotes(strtolower($emoteName), EmoteSimple::getInstance()->getDataIds()->emotes[0]['uid']), strtolower($permission));
 ```
@@ -28,11 +24,9 @@ $player->sendMessage(EmoteSimple::getInstance()->getEmotes()->createEmotes(strto
 - Remove Emotes
    
   For commands you can use:
-  
   `/emotes remove <string: emoteName>`
 
   For api you can use:
-  
 ```php
 $player->sendMessage(EmoteSimple::getInstance()->getEmotes()->removeEmotes($emoteName));
 ```
@@ -40,11 +34,9 @@ $player->sendMessage(EmoteSimple::getInstance()->getEmotes()->removeEmotes($emot
 - Play Emotes
 
   For commands you can use:
-  
   `!emotes <string: emoteName>`
 
   For api you can use:
-  
 ```php
 if(EmoteSimple::getInstance()->getEmotes()->searchEmote($emoteName)){
     $emoteId = EmoteSimple::getInstance()->getEmotes()->getIds(EmoteSimple::getInstance()->getEmotes()->getIndex($emoteName));

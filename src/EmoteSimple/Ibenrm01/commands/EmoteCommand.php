@@ -77,13 +77,28 @@ class EmoteCommand extends Command {
                 break;
             case "version":
             case "ver":
-                $player->sendMessage("§a> EmoteSimple Description\n".
-                "§fAuthor: §aIbenrm01\n".
-                "§fVersion: §a1.8.1\n".
-                "§fApi: §a[4.0.0]");
+                $player->sendMessage("§a> EmoteSimple Version:\n".
+                "§7Name: §b{$this->plugin->getDescription()->getName()}\n".
+                "§7Author: §b[{$this->getAuthor()}]\n".
+                "§7Api: §b[{$this->getApi()}]\n".
+                "§7Version: §b{$this->plugin->getDescription()->getVersion()}");
             break;
         }
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthor(): string {
+        return implode(", ", $this->plugin->getDescription()->getAuthors());
+    }
+
+    /**
+     * @return string
+     */
+    public function getApi(): string {
+        return implode(", ", $this->plugin->getDescription()->getCompatibleApis());
     }
 
     /**
